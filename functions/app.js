@@ -3,7 +3,6 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const cloudinary = require("cloudinary").v2;
-const serverless = require("serverless-http");
 
 // Routes
 const slidesRouter = require("./routers/Slides");
@@ -16,7 +15,6 @@ const fontRoutes = require("./routers/font");
 const questionRoutes = require("./routers/question");
 
 const app = express();
-const router = express.Router();
 
 // Middleware
 app.use(cors({ origin: "*" }));
@@ -61,8 +59,6 @@ app.use("/slides", slidesRouter);
 app.use("/fonts", fontRoutes);
 app.use("/question", questionRoutes);
 
-// app.use("/.netlify/functions/app", router);
 app.listen("5005", () => {
   console.log("server is running on 5005");
 });
-// module.exports.handler = serverless(app);
