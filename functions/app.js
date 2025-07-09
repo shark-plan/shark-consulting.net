@@ -51,7 +51,7 @@ app.use((req, res, next) => {
   next();
 });
 app.get("/", () => {
-  res.send("hi");
+  res.send("hi hussam");
 });
 // Register Routes
 app.use("/category", categoryRouter);
