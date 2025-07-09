@@ -50,19 +50,21 @@ app.use((req, res, next) => {
   }
   next();
 });
-
+app.get("/", () => {
+  res.send("hi");
+});
 // Register Routes
-router.use("/category", categoryRouter);
-router.use("/email", emailRouter);
-router.use("/about", aboutRouter);
-router.use("/why-us", whyUsRouter);
-router.use("/previous-works", previousWorks);
-router.use("/slides", slidesRouter);
-router.use("/fonts", fontRoutes);
-router.use("/question", questionRoutes);
+app.use("/category", categoryRouter);
+app.use("/email", emailRouter);
+app.use("/about", aboutRouter);
+app.use("/why-us", whyUsRouter);
+app.use("/previous-works", previousWorks);
+app.use("/slides", slidesRouter);
+app.use("/fonts", fontRoutes);
+app.use("/question", questionRoutes);
 
-app.use("/.netlify/functions/app", router);
+// app.use("/.netlify/functions/app", router);
 app.listen("5005", () => {
   console.log("server is running on 5005");
 });
-module.exports.handler = serverless(app);
+// module.exports.handler = serverless(app);
