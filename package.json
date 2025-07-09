@@ -20,8 +20,6 @@
     "express": "^5.1.0",
     "mongoose": "^8.16.1",
     "multer": "^2.0.1",
-    "netlify-cli": "^22.2.1",
-    "netlify-lambda": "^2.0.16",
     "nodemailer": "^7.0.4",
     "nodemon": "^3.1.10",
     "serverless-http": "^3.2.0"
