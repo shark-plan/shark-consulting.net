@@ -1,0 +1,20 @@
+{
+	"siteId": "3b09ef45-e3f7-484e-99e9-13b678871913",
+	"geolocation": {
+		"data": {
+			"city": "Doha",
+			"country": {
+				"code": "QA",
+				"name": "Qatar"
+			},
+			"subdivision": {
+				"code": "DA",
+				"name": "Baladīyat ad Dawḩah"
+			},
+			"timezone": "Asia/Qatar",
+			"latitude": 25.2925,
+			"longitude": 51.5321
+		},
+		"timestamp": 1751838717061
+	}
+}

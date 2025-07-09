@@ -1,0 +1,31 @@
+functionsDirectoryOrigin = "config-v1"
+headersOrigin = "config"
+redirectsOrigin = "config"
+plugins = []
+functionsDirectory = "/Users/hussamshannan/Documents/projects/jawda-study/server/functions"
+headers = []
+redirects = []
+
+[functions]
+
+[functions."*"]
+
+[build]
+publish = "/Users/hussamshannan/Documents/projects/jawda-study/server"
+publishOrigin = "config"
+base = "/Users/hussamshannan/Documents/projects/jawda-study/server"
+functions = "/Users/hussamshannan/Documents/projects/jawda-study/server/functions"
+
+[build.environment]
+
+[build.processing]
+
+[build.processing.css]
+
+[build.processing.html]
+
+[build.processing.images]
+
+[build.processing.js]
+
+[build.services]

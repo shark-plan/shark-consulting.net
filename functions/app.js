@@ -1,0 +1,68 @@
+require("dotenv").config();
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const cloudinary = require("cloudinary").v2;
+const serverless = require("serverless-http");
+
+// Routes
+const slidesRouter = require("./routers/Slides");
+const previousWorks = require("./routers/previousWork");
+const whyUsRouter = require("./routers/whuUs");
+const aboutRouter = require("./routers/about");
+const emailRouter = require("./routers/email");
+const categoryRouter = require("./routers/category");
+const fontRoutes = require("./routers/font");
+const questionRoutes = require("./routers/question");
+
+const app = express();
+const router = express.Router();
+
+// Middleware
+app.use(cors({ origin: "*" }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// MongoDB connection
+mongoose
+  .connect(process.env.MONGOODB)
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.error("MongoDB connection error:", err));
+
+// Cloudinary configuration
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+app.use((req, res, next) => {
+  if (
+    req.headers["content-type"] === "application/json" &&
+    Buffer.isBuffer(req.body)
+  ) {
+    try {
+      req.body = JSON.parse(req.body.toString("utf8"));
+    } catch (err) {
+      console.error("Failed to parse JSON body:", err);
+      return res.status(400).json({ error: "Invalid JSON format" });
+    }
+  }
+  next();
+});
+
+// Register Routes
+router.use("/category", categoryRouter);
+router.use("/email", emailRouter);
+router.use("/about", aboutRouter);
+router.use("/why-us", whyUsRouter);
+router.use("/previous-works", previousWorks);
+router.use("/slides", slidesRouter);
+router.use("/fonts", fontRoutes);
+router.use("/question", questionRoutes);
+
+app.use("/.netlify/functions/app", router);
+app.listen("5005", () => {
+  console.log("server is running on 5005");
+});
+module.exports.handler = serverless(app);
