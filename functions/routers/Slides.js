@@ -18,7 +18,6 @@ const uploadToCloudinary = async (buffer, mimetype) => {
     unique_filename: false,
   });
 };
-
 // POST - Create slide
 router.post("/", upload.single("img"), async (req, res) => {
   let uploadedImageId = null;
