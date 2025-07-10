@@ -92,6 +92,7 @@ router.put("/:id", upload.single("img"), async (req, res) => {
     res.json(updatedSlide);
   } catch (err) {
     res.status(500).json({ error: err.message });
+    console.error(err.message);
   }
 });
 
