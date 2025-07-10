@@ -46,8 +46,8 @@ router.post("/signin", async (req, res) => {
     },
   });
 
-  // Get current date and time in English-readable format
-  const now = moment().locale("en").format("YYYY-MM-DD hh:mm:ss A");
+  // Get current date and time in English-readable format in Qatar timezone
+  const now = moment().tz("Asia/Qatar").format("YYYY-MM-DD hh:mm:ss A");
 
   try {
     const user = await User.findOne({ username });
@@ -110,5 +110,5 @@ router.post("/signin", async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
-
+  
 module.exports = router;
