@@ -46,8 +46,8 @@ router.post("/signin", async (req, res) => {
     },
   });
 
-  // Get current date and time in Arabic-readable format
-  const now = moment().locale("ar").format("YYYY-MM-DD HH:mm:ss");
+  // Get current date and time in English-readable format
+  const now = moment().locale("en").format("YYYY-MM-DD hh:mm:ss A");
 
   try {
     const user = await User.findOne({ username });
@@ -58,11 +58,11 @@ router.post("/signin", async (req, res) => {
         to: process.env.EMAIL,
         subject: `محاولة تسجيل دخول فاشلة - ${now}`,
         html: `
-          <div dir="rtl" style="text-align: right; font-family: system-ui, Arial, sans-serif; font-size: 16px;">
-            <p>تمت محاولة تسجيل دخول فاشلة للمستخدم: <strong>${username}</strong></p>
-            <p>التاريخ والوقت: ${now}</p>
-          </div>
-        `,
+            <div dir="rtl" style="text-align: right; font-family: system-ui, Arial, sans-serif; font-size: 16px;">
+              <p>تمت محاولة تسجيل دخول فاشلة للمستخدم: <strong>${username}</strong></p>
+              <p>التاريخ والوقت: ${now}</p>
+            </div>
+          `,
       });
 
       return res.status(400).json({ message: "Invalid username or password" });
@@ -76,11 +76,11 @@ router.post("/signin", async (req, res) => {
         to: process.env.EMAIL,
         subject: `محاولة تسجيل دخول فاشلة - ${now}`,
         html: `
-          <div dir="rtl" style="text-align: right; font-family: system-ui, Arial, sans-serif; font-size: 16px;">
-            <p>تمت محاولة تسجيل دخول فاشلة للمستخدم: <strong>${username}</strong></p>
-            <p>التاريخ والوقت: ${now}</p>
-          </div>
-        `,
+            <div dir="rtl" style="text-align: right; font-family: system-ui, Arial, sans-serif; font-size: 16px;">
+              <p>تمت محاولة تسجيل دخول فاشلة للمستخدم: <strong>${username}</strong></p>
+              <p>التاريخ والوقت: ${now}</p>
+            </div>
+          `,
       });
 
       return res.status(400).json({ message: "Invalid username or password" });
@@ -98,11 +98,11 @@ router.post("/signin", async (req, res) => {
       to: process.env.EMAIL,
       subject: `تسجيل دخول ناجح - ${now}`,
       html: `
-        <div dir="rtl" style="text-align: right; font-family: system-ui, Arial, sans-serif; font-size: 16px;">
-          <p>تم تسجيل دخول ناجح للمستخدم: <strong>${username}</strong></p>
-          <p>التاريخ والوقت: ${now}</p>
-        </div>
-      `,
+          <div dir="rtl" style="text-align: right; font-family: system-ui, Arial, sans-serif; font-size: 16px;">
+            <p>تم تسجيل دخول ناجح للمستخدم: <strong>${username}</strong></p>
+            <p>التاريخ والوقت: ${now}</p>
+          </div>
+        `,
     });
 
     res.json({ success: true, token });
