@@ -13,6 +13,8 @@ const emailRouter = require("./routers/email");
 const categoryRouter = require("./routers/category");
 const fontRoutes = require("./routers/font");
 const questionRoutes = require("./routers/question");
+const loginRoutes = require("./routers/login");
+const authenticateToken = require("./auth/auth");
 
 const app = express();
 
@@ -49,6 +51,10 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("/api/protected", authenticateToken, (req, res) => {
+  res.json({ message: "This is protected data", user: req.user });
+});
+
 // Register Routes
 app.use("/category", categoryRouter);
 app.use("/email", emailRouter);
@@ -58,6 +64,7 @@ app.use("/previous-works", previousWorks);
 app.use("/slides", slidesRouter);
 app.use("/fonts", fontRoutes);
 app.use("/question", questionRoutes);
+app.use("/user", loginRoutes);
 
 app.listen("5005", () => {
   console.log("server is running on 5005");
