@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../model/users");
 const nodemailer = require("nodemailer"); //
-const moment = require("moment"); 
+const moment = require("moment-timezone"); 
 require("dotenv").config();
 
 const router = express.Router();
@@ -33,7 +33,6 @@ router.post("/signup", async (req, res) => {
 });
 
 // POST /signin
-
 router.post("/signin", async (req, res) => {
   const { username, password } = req.body;
 
@@ -47,7 +46,7 @@ router.post("/signin", async (req, res) => {
   });
 
   // Get current date and time in English-readable format in Qatar timezone
-  const now = moment().tz("Asia/Qatar").format("YYYY-MM-DD hh:mm:ss A");
+  const now = moment.tz("Asia/Qatar").format("YYYY-MM-DD hh:mm:ss A");
 
   try {
     const user = await User.findOne({ username });
@@ -58,11 +57,11 @@ router.post("/signin", async (req, res) => {
         to: process.env.EMAIL,
         subject: `محاولة تسجيل دخول فاشلة - ${now}`,
         html: `
-            <div dir="rtl" style="text-align: right; font-family: system-ui, Arial, sans-serif; font-size: 16px;">
-              <p>تمت محاولة تسجيل دخول فاشلة للمستخدم: <strong>${username}</strong></p>
-              <p>التاريخ والوقت: ${now}</p>
-            </div>
-          `,
+          <div dir="rtl" style="text-align: right; font-family: system-ui, Arial, sans-serif; font-size: 16px;">
+            <p>تمت محاولة تسجيل دخول فاشلة للمستخدم: <strong>${username}</strong></p>
+            <p>التاريخ والوقت: ${now}</p>
+          </div>
+        `,
       });
 
       return res.status(400).json({ message: "Invalid username or password" });
@@ -76,11 +75,11 @@ router.post("/signin", async (req, res) => {
         to: process.env.EMAIL,
         subject: `محاولة تسجيل دخول فاشلة - ${now}`,
         html: `
-            <div dir="rtl" style="text-align: right; font-family: system-ui, Arial, sans-serif; font-size: 16px;">
-              <p>تمت محاولة تسجيل دخول فاشلة للمستخدم: <strong>${username}</strong></p>
-              <p>التاريخ والوقت: ${now}</p>
-            </div>
-          `,
+          <div dir="rtl" style="text-align: right; font-family: system-ui, Arial, sans-serif; font-size: 16px;">
+            <p>تمت محاولة تسجيل دخول فاشلة للمستخدم: <strong>${username}</strong></p>
+            <p>التاريخ والوقت: ${now}</p>
+          </div>
+        `,
       });
 
       return res.status(400).json({ message: "Invalid username or password" });
@@ -98,11 +97,11 @@ router.post("/signin", async (req, res) => {
       to: process.env.EMAIL,
       subject: `تسجيل دخول ناجح - ${now}`,
       html: `
-          <div dir="rtl" style="text-align: right; font-family: system-ui, Arial, sans-serif; font-size: 16px;">
-            <p>تم تسجيل دخول ناجح للمستخدم: <strong>${username}</strong></p>
-            <p>التاريخ والوقت: ${now}</p>
-          </div>
-        `,
+        <div dir="rtl" style="text-align: right; font-family: system-ui, Arial, sans-serif; font-size: 16px;">
+          <p>تم تسجيل دخول ناجح للمستخدم: <strong>${username}</strong></p>
+          <p>التاريخ والوقت: ${now}</p>
+        </div>
+      `,
     });
 
     res.json({ success: true, token });
@@ -110,5 +109,6 @@ router.post("/signin", async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
+
   
 module.exports = router;
