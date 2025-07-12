@@ -1,9 +1,9 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const User = require("../model/users");
+const User = require("../models/users");
 const nodemailer = require("nodemailer"); //
-const moment = require("moment-timezone"); 
+const moment = require("moment-timezone");
 require("dotenv").config();
 
 const router = express.Router();
@@ -110,5 +110,4 @@ router.post("/signin", async (req, res) => {
   }
 });
 
-  
 module.exports = router;

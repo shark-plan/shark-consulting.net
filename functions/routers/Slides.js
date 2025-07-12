@@ -1,6 +1,6 @@
 const express = require("express");
 const cloudinary = require("cloudinary").v2;
-const Slide = require("../model/slides");
+const Slide = require("../models/slides");
 const multer = require("multer");
 
 const router = express.Router();

@@ -14,6 +14,7 @@ const categoryRouter = require("./routers/category");
 const fontRoutes = require("./routers/font");
 const questionRoutes = require("./routers/question");
 const loginRoutes = require("./routers/login");
+const menuRoutes = require("./routers/menu");
 const authenticateToken = require("./auth/auth");
 
 const app = express();
@@ -65,9 +66,7 @@ app.use("/slides", slidesRouter);
 app.use("/fonts", fontRoutes);
 app.use("/question", questionRoutes);
 app.use("/user", loginRoutes);
-
-
-
+app.use("/menu", menuRoutes);
 
 app.listen("5005", () => {
   console.log("server is running on 5005");

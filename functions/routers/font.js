@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Font = require("../model/font");
+const Font = require("../models/font");
 
 router.post("/set", async (req, res) => {
   try {
@@ -16,13 +16,13 @@ router.post("/set", async (req, res) => {
 });
 // GET /api/fonts/latest
 router.get("/latest", async (req, res) => {
-    try {
-      const font = await Font.findOne().sort({ createdAt: -1 });
-      if (!font) return res.status(404).json({ message: "No font found" });
-      res.json(font);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
-  });
-  
+  try {
+    const font = await Font.findOne().sort({ createdAt: -1 });
+    if (!font) return res.status(404).json({ message: "No font found" });
+    res.json(font);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

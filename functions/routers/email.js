@@ -1,6 +1,6 @@
 const express = require("express");
 const nodemailer = require("nodemailer");
-const EmailSchema = require("../model/email"); // adjust path as needed
+const EmailSchema = require("../models/email"); // adjust path as needed
 
 const router = express.Router();
 

@@ -1,7 +1,7 @@
 const express = require("express");
 const cloudinary = require("cloudinary").v2;
 const multer = require("multer");
-const About = require("../model/aboutPages"); // adjust path as needed
+const About = require("../models/aboutPages"); // adjust path as needed
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });

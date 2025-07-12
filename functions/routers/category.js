@@ -1,5 +1,5 @@
 const express = require("express");
-const About = require("../model/aboutPages"); // adjust path as needed
+const About = require("../models/aboutPages"); // adjust path as needed
 
 const router = express.Router();
 
