@@ -45,7 +45,7 @@ router.post("/send", async (req, res) => {
         <p>او الاتصال بنا علي <strong>+974 55225488</strong></p>
         <br />
         <p>مع التحية،</p>
-        <p><strong>شارك للاستسارات</strong></p>
+        <p><strong>شارك للاستشارات</strong></p>
       </div>
     `,
   };
