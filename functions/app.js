@@ -53,7 +53,7 @@ app.use((req, res, next) => {
 });
 
 app.get("/api/protected", authenticateToken, (req, res) => {
-  res.json({ message: "This is protected data", user: req.user });
+  res.status(200).json({ message: "This is protected data", user: req.user });
 });
 
 // Register Routes
