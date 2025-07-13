@@ -2,6 +2,7 @@ const express = require("express");
 const cloudinary = require("cloudinary").v2;
 const multer = require("multer");
 const About = require("../models/aboutPages");
+const authenticateToken = require("../auth/auth");
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
@@ -16,91 +17,106 @@ const uploadToCloudinary = async (buffer, mimetype) => {
 };
 
 // POST - Create about entry
-router.post("/", upload.single("img"), async (req, res) => {
-  let uploadedImageId = null;
+router.post(
+  "/",
+  [authenticateToken, upload.single("img")],
+  async (req, res) => {
+    let uploadedImageId = null;
 
-  try {
-    const { topTitle, topSubtitle, sectionTitle, description, category } =
-      req.body;
+    try {
+      const { topTitle, topSubtitle, sectionTitle, description, category } =
+        req.body;
 
-    if (
-      !topTitle ||
-      !topSubtitle ||
-      !sectionTitle ||
-      !description ||
-      !category
-    ) {
-      return res.status(400).json({ message: "Missing required fields." });
-    }
+      if (
+        !topTitle ||
+        !topSubtitle ||
+        !sectionTitle ||
+        !description ||
+        !category
+      ) {
+        return res.status(400).json({ message: "Missing required fields." });
+      }
 
-    if (!req.file) {
-      return res.status(400).json({ message: "Image is required." });
-    }
-
-    const result = await uploadToCloudinary(req.file.buffer, req.file.mimetype);
-    uploadedImageId = result.public_id;
-
-    const about = new About({
-      topTitle,
-      topSubtitle,
-      sectionTitle,
-      description,
-      category,
-      imgUrl: result.secure_url,
-      imgPublicId: uploadedImageId,
-    });
-
-    await about.save();
-    res.json(about);
-  } catch (err) {
-    if (uploadedImageId) await cloudinary.uploader.destroy(uploadedImageId);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// PUT - Update about entry
-router.put("/:id", upload.single("img"), async (req, res) => {
-  try {
-    const { topTitle, topSubtitle, sectionTitle, description, category } =
-      req.body;
-    const existing = await About.findById(req.params.id);
-
-    if (!existing) {
-      return res.status(404).json({ error: "About entry not found" });
-    }
-
-    const update = {
-      topTitle,
-      topSubtitle,
-      sectionTitle,
-      description,
-      category,
-    };
-
-    if (req.file) {
-      if (existing.imgPublicId) {
-        await cloudinary.uploader.destroy(existing.imgPublicId);
+      if (!req.file) {
+        return res.status(400).json({ message: "Image is required." });
       }
 
       const result = await uploadToCloudinary(
         req.file.buffer,
         req.file.mimetype
       );
-      update.imgUrl = result.secure_url;
-      update.imgPublicId = result.public_id;
-    }
+      uploadedImageId = result.public_id;
 
-    const updatedAbout = await About.findByIdAndUpdate(req.params.id, update, {
-      new: true,
-    });
-    res.json(updatedAbout);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+      const about = new About({
+        topTitle,
+        topSubtitle,
+        sectionTitle,
+        description,
+        category,
+        imgUrl: result.secure_url,
+        imgPublicId: uploadedImageId,
+      });
+
+      await about.save();
+      res.json(about);
+    } catch (err) {
+      if (uploadedImageId) await cloudinary.uploader.destroy(uploadedImageId);
+      res.status(500).json({ error: err.message });
+    }
   }
-});
+);
+
+// PUT - Update about entry
+router.put(
+  "/:id",
+  [authenticateToken, upload.single("img")],
+  async (req, res) => {
+    try {
+      const { topTitle, topSubtitle, sectionTitle, description, category } =
+        req.body;
+      const existing = await About.findById(req.params.id);
+
+      if (!existing) {
+        return res.status(404).json({ error: "About entry not found" });
+      }
+
+      const update = {
+        topTitle,
+        topSubtitle,
+        sectionTitle,
+        description,
+        category,
+      };
+
+      if (req.file) {
+        if (existing.imgPublicId) {
+          await cloudinary.uploader.destroy(existing.imgPublicId);
+        }
+
+        const result = await uploadToCloudinary(
+          req.file.buffer,
+          req.file.mimetype
+        );
+        update.imgUrl = result.secure_url;
+        update.imgPublicId = result.public_id;
+      }
+
+      const updatedAbout = await About.findByIdAndUpdate(
+        req.params.id,
+        update,
+        {
+          new: true,
+        }
+      );
+      res.json(updatedAbout);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  }
+);
 
 // DELETE - Delete about entry
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authenticateToken, async (req, res) => {
   try {
     const about = await About.findById(req.params.id);
     if (!about) return res.status(404).json({ error: "About not found" });
