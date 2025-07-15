@@ -5,6 +5,8 @@ const cors = require("cors");
 const cloudinary = require("cloudinary").v2;
 
 // Routes
+const heroRoutes = require("./routers/hero");
+
 const slidesRouter = require("./routers/Slides");
 const previousWorks = require("./routers/previousWork");
 const whyUsRouter = require("./routers/whuUs");
@@ -15,6 +17,7 @@ const fontRoutes = require("./routers/font");
 const questionRoutes = require("./routers/question");
 const loginRoutes = require("./routers/login");
 const menuRoutes = require("./routers/menu");
+const textContentRoutes = require('./routers/textContent');
 const authenticateToken = require("./auth/auth");
 
 const app = express();
@@ -67,6 +70,8 @@ app.use("/fonts", fontRoutes);
 app.use("/question", questionRoutes);
 app.use("/user", loginRoutes);
 app.use("/menu", menuRoutes);
+app.use("/textContent", textContentRoutes);
+app.use("/hero", heroRoutes);
 
 app.listen("5005", () => {
   console.log("server is running on 5005");
