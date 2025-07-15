@@ -107,7 +107,7 @@ router.post(
   }
 );
 
-router.get("/", authenticateToken, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const existing = await textContent.findOne();
 
