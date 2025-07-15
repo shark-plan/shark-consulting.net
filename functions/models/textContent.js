@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const textContentSchema = new mongoose.Schema({
-  slide1_title: {
+  headerTitle: {
     type: String,
     required: true,
   },
