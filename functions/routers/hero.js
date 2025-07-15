@@ -115,7 +115,7 @@ router.post(
 );
 
 // GET - Retrieve Hero Content
-router.get("/", authenticateToken, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const existing = await Hero.findOne();
 
