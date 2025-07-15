@@ -31,7 +31,6 @@ router.post(
     let uploadedImageId = null;
 
     try {
-      console.log(req.body);
       const video = req.files["video"]?.[0];
       const thumbnail = req.files["thumbnail"]?.[0];
 

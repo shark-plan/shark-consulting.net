@@ -1,49 +1,89 @@
 const express = require("express");
-const router = express.Router();
+const cloudinary = require("cloudinary").v2;
+const multer = require("multer");
 const EditableText = require("../models/menu");
+const authenticateToken = require("../auth/auth");
 
-// POST /editable-text/save
-// Save or update the editable text document
-router.post("/save", async (req, res) => {
-  try {
-    const data = req.body; // expect all fields here, e.g. { home: "...", aboutLabel: "...", ... }
+const router = express.Router();
+const upload = multer({ storage: multer.memoryStorage() });
 
-    // Option 1: If you only want to have a single document, update the first one or create new
-    const existing = await EditableText.findOne();
+// helper to upload buffer to Cloudinary as data URI
+const uploadToCloudinary = async (buffer, mimetype) => {
+  const base64 = buffer.toString("base64");
+  const dataURI = `data:${mimetype};base64,${base64}`;
+  return cloudinary.uploader.upload(dataURI, {
+    resource_type: mimetype.startsWith("video") ? "video" : "image",
+    use_filename: true,
+    unique_filename: false,
+    overwrite: true,
+    folder: "logos",
+  });
+};
 
-    if (existing) {
-      // Update existing document
-      Object.assign(existing, data);
-      await existing.save();
+// POST /menu/save
+router.post(
+  "/save",
+  authenticateToken,
+  upload.single("logo"),
+  async (req, res) => {
+    try {
+      const data = req.body;
+      const logoFile = req.file;
+
+      let existing = await EditableText.findOne();
+
+      // ✅ If a new logo file is uploaded
+      if (logoFile) {
+        // Delete previous logo from Cloudinary
+        if (existing?.logoPublicId) {
+          await cloudinary.uploader.destroy(existing.logoPublicId);
+        }
+
+        const uploadResult = await uploadToCloudinary(
+          logoFile.buffer,
+          logoFile.mimetype
+        );
+
+        // Add to request body
+        data.logoUrl = uploadResult.secure_url;
+        data.logoPublicId = uploadResult.public_id;
+      }
+
+      if (existing) {
+        Object.assign(existing, data);
+        await existing.save();
+        return res.status(200).json({
+          message: "Editable text updated",
+          editableText: existing,
+        });
+      } else {
+        const newDoc = new EditableText(data);
+        await newDoc.save();
+        return res.status(201).json({
+          message: "Editable text saved",
+          editableText: newDoc,
+        });
+      }
+    } catch (error) {
+      console.error("Error saving editable text:", error);
       return res
-        .status(200)
-        .json({ message: "Editable text updated", editableText: existing });
-    } else {
-      // Create new document
-      const newEditableText = new EditableText(data);
-      await newEditableText.save();
-      return res.status(201).json({
-        message: "Editable text saved",
-        editableText: newEditableText,
-      });
+        .status(500)
+        .json({ message: "Server error", error: error.message });
     }
-  } catch (error) {
-    console.error("Error saving editable text:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
   }
-});
+);
+
+// GET /menu
 router.get("/", async (req, res) => {
   try {
     const menu = await EditableText.findOne();
-
-    if (!menu) {
+    if (!menu)
       return res.status(404).json({ message: "No editable text found" });
-    }
-
     res.status(200).json({ menu });
   } catch (error) {
     console.error("Error fetching editable text:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });
+
 module.exports = router;
