@@ -68,9 +68,9 @@ router.post("/send", async (req, res) => {
     res.status(500).json({ error: "فشل في إرسال البريد أو حفظ البيانات" });
   }
 });
-router.get("/get", async (req, res) => {
+router.get("/get", authenticateToken, async (req, res) => {
   try {
-    const emails = await EmailSchema.find({}, "name email phone");
+    const emails = await EmailSchema.find({}, "name email phone note");
     res.json(emails);
   } catch (err) {
     res.status(500).json({ message: err.message });
