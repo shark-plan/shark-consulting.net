@@ -17,9 +17,9 @@ const fontRoutes = require("./routers/font");
 const questionRoutes = require("./routers/question");
 const loginRoutes = require("./routers/login");
 const menuRoutes = require("./routers/menu");
-const textContentRoutes = require('./routers/textContent');
+const textContentRoutes = require("./routers/textContent");
 const authenticateToken = require("./auth/auth");
-
+const paperworkRoutes = require("./routers/paperwork");
 const app = express();
 
 // Middleware
@@ -72,6 +72,7 @@ app.use("/user", loginRoutes);
 app.use("/menu", menuRoutes);
 app.use("/textContent", textContentRoutes);
 app.use("/hero", heroRoutes);
+app.use("/paperwork", paperworkRoutes);
 
 app.listen("5005", () => {
   console.log("server is running on 5005");
