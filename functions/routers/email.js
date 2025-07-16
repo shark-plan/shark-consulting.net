@@ -6,7 +6,7 @@ const authenticateToken = require("../auth/auth");
 const router = express.Router();
 
 router.post("/send", async (req, res) => {
-  const { name, email, phone, note } = req.body;
+  const { name, email, phone } = req.body;
 
   // Setup mail transporter
   const transporter = nodemailer.createTransport({
@@ -52,7 +52,7 @@ router.post("/send", async (req, res) => {
   };
 
   try {
-    const schema = new EmailSchema({ name, email, phone, note });
+    const schema = new EmailSchema({ name, email, phone });
     await schema.save();
     // Send admin email
     const adminInfo = await transporter.sendMail(adminMailOptions);

@@ -20,6 +20,7 @@ const EmailsSchema = new mongoose.Schema(
     },
     note: {
       type: String,
+      default: "",
     },
     isSave: {
       type: Boolean,
