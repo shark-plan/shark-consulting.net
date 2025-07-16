@@ -1,6 +1,7 @@
 const express = require("express");
 const nodemailer = require("nodemailer");
 const EmailSchema = require("../models/email"); // adjust path as needed
+const authenticateToken = require("../auth/auth");
 
 const router = express.Router();
 
@@ -73,6 +74,45 @@ router.get("/get", async (req, res) => {
     res.json(emails);
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+});
+// ✅ ➤ UPDATE NOTE BY ID
+router.post("/note/:id", authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { note } = req.body;
+
+    const updated = await EmailSchema.findByIdAndUpdate(
+      id,
+      { note },
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ message: "Email not found" });
+    }
+
+    res.json({ message: "Note saved", email: updated });
+  } catch (err) {
+    console.error("Update failed:", err);
+    res.status(500).json({ message: "Failed to update note" });
+  }
+});
+
+// ✅ ➤ DELETE EMAIL BY ID
+router.delete("/delete/:id", authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await EmailSchema.findByIdAndDelete(id);
+
+    if (!deleted) {
+      return res.status(404).json({ message: "Email not found" });
+    }
+
+    res.json({ message: "Deleted successfully" });
+  } catch (err) {
+    console.error("Delete failed:", err);
+    res.status(500).json({ message: "Failed to delete email" });
   }
 });
 

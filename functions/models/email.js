@@ -18,6 +18,9 @@ const EmailsSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    note: {
+      type: String,
+    },
     isSave: {
       type: Boolean,
       default: false,
