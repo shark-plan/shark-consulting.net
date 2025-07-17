@@ -20,6 +20,7 @@ const uploadToCloudinary = async (buffer, mimetype) => {
 };
 
 // POST - Create or Update Hero Content
+
 router.post(
   "/",
   authenticateToken,
@@ -41,7 +42,7 @@ router.post(
       // Validate required fields
       if (
         !slide1_desc ||
-        !slide1_title||
+        !slide1_title ||
         !slide2_title ||
         !slide2_desc ||
         !slide3_title ||
@@ -55,22 +56,25 @@ router.post(
       let bg_videoUrl = existing?.bg_videoUrl || null;
       let bg_videoPublicId = existing?.bg_videoPublicId || null;
 
-      // Upload video if provided
+      // ✅ Delete old video if new one is being uploaded
       if (video && video.mimetype.startsWith("video")) {
         if (bg_videoPublicId) {
           try {
             await cloudinary.uploader.destroy(bg_videoPublicId, {
               resource_type: "video",
             });
+            console.log(`Old video deleted: ${bg_videoPublicId}`);
           } catch (err) {
             console.warn(`Failed to delete old video (${bg_videoPublicId})`);
             console.warn(err.message);
           }
         }
 
+        // ✅ Upload new video
         const uploadedVideo = await uploadToCloudinary(
           video.buffer,
-          video.mimetype
+          video.mimetype,
+          "video" // you may need this param depending on your function
         );
 
         bg_videoUrl = uploadedVideo.secure_url;
@@ -78,7 +82,7 @@ router.post(
         uploadedVideoId = uploadedVideo.public_id;
       }
 
-      // Final data to update/create
+      // ✅ Final data to save
       const updateData = {
         slide1_desc,
         slide1_title,
@@ -90,10 +94,10 @@ router.post(
         bg_videoPublicId,
       };
 
-      // Create or Update one single document
+      // ✅ Save the document (update or create)
       const updated = await Hero.findOneAndUpdate({}, updateData, {
         new: true,
-        upsert: true, // create if not exists
+        upsert: true, // creates if none exists
       });
 
       return res.json({
@@ -101,11 +105,16 @@ router.post(
         content: updated,
       });
     } catch (err) {
-      // Cleanup uploaded video on failure
+      // ✅ Cleanup newly uploaded video if error occurs
       if (uploadedVideoId) {
-        await cloudinary.uploader.destroy(uploadedVideoId, {
-          resource_type: "video",
-        });
+        try {
+          await cloudinary.uploader.destroy(uploadedVideoId, {
+            resource_type: "video",
+          });
+          console.log("Rolled back uploaded video due to error.");
+        } catch (cleanupErr) {
+          console.warn("Failed to clean up video after error:", cleanupErr);
+        }
       }
 
       console.error("Hero Upload Error:", err);
