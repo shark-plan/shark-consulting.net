@@ -21,6 +21,7 @@ const textContentRoutes = require("./routers/textContent");
 const authenticateToken = require("./auth/auth");
 const paperworkRoutes = require("./routers/paperwork");
 const feedbacksRoutes = require("./routers/feedBack");
+const UIRoutes = require("./routers/uistate");
 const app = express();
 
 // Middleware
@@ -75,6 +76,7 @@ app.use("/textContent", textContentRoutes);
 app.use("/hero", heroRoutes);
 app.use("/paperwork", paperworkRoutes);
 app.use("/feedbacks", feedbacksRoutes);
+app.use("/ui", UIRoutes);
 
 app.listen("5005", () => {
   console.log("server is running on 5005");
