@@ -17,6 +17,15 @@ const uploadToCloudinary = async (buffer, mimetype) => {
   });
 };
 
+const deleteFromCloudinary = async (publicId) => {
+  try {
+    await cloudinary.uploader.destroy(publicId);
+  } catch (err) {
+    console.error("Failed to delete image from Cloudinary:", err);
+  }
+};
+
+
 router.post(
   "/save",
   authenticateToken,
@@ -27,8 +36,21 @@ router.post(
       let imageUrl = null;
       let publicId = null;
 
-      // Upload to Cloudinary if image is included
+      // Find the existing document
+      let existing = await Paperwork.findOne();
+
+      // If a new image is uploaded
       if (req.file) {
+        // 🔥 Delete the old image from Cloudinary
+        if (existing?.paperworkImagePublicId) {
+          try {
+            await cloudinary.uploader.destroy(existing.paperworkImagePublicId);
+          } catch (deleteErr) {
+            console.error("Error deleting old image:", deleteErr);
+          }
+        }
+
+        // ☁️ Upload the new image
         const uploaded = await uploadToCloudinary(
           req.file.buffer,
           req.file.mimetype
@@ -37,20 +59,19 @@ router.post(
         publicId = uploaded.public_id;
       }
 
-      // Check for existing document
-      let existing = await Paperwork.findOne();
-
       if (existing) {
-        // Update
+        // ✏️ Update the document
         existing.paperworkText = text || existing.paperworkText;
+
         if (imageUrl) {
           existing.paperworkImage = imageUrl;
           existing.paperworkImagePublicId = publicId;
         }
+
         await existing.save();
         return res.status(200).json({ message: "Updated successfully" });
       } else {
-        // Create
+        // 🆕 Create a new document
         const newPaperwork = new Paperwork({
           paperworkText: text,
           paperworkImage: imageUrl,
@@ -65,6 +86,8 @@ router.post(
     }
   }
 );
+
+
 router.get("/", async (req, res) => {
   try {
     const paperwork = await Paperwork.findOne();
