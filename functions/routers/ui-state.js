@@ -1,7 +1,7 @@
 // routes/uiStateRoutes.js
 const express = require("express");
 const router = express.Router();
-const UiState = require("../models/UiState");
+const UiState = require("../models/ui-state");
 
 // GET UI state
 router.get("/", async (req, res) => {

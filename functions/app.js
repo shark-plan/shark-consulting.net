@@ -21,7 +21,7 @@ const textContentRoutes = require("./routers/textContent");
 const authenticateToken = require("./auth/auth");
 const paperworkRoutes = require("./routers/paperwork");
 const feedbacksRoutes = require("./routers/feedBack");
-const UIRoutes = require("./routers/uistate");
+const UIRoutes = require("./routers/ui-state");
 const app = express();
 
 // Middleware
