@@ -32,6 +32,7 @@ router.post(
   async (req, res) => {
     let uploadedVideoId = null;
     const uploadedImagePublicIds = [];
+    console.log(req.body);
     try {
       const files = req.files;
       const {
@@ -118,13 +119,13 @@ router.post(
       const updateData = {
         slide1_desc,
         slide1_title,
-        slide1_visible: slide1_visible === "true",
+        slide1_visible: slide1_visible,
         slide2_title,
         slide2_desc,
-        slide2_visible: slide2_visible === "true",
+        slide2_visible: slide2_visible,
         slide3_title,
         slide3_desc,
-        slide3_visible: slide3_visible === "true",
+        slide3_visible: slide3_visible,
         bg_videoUrl,
         bg_videoPublicId,
         slide1_imageUrl:
